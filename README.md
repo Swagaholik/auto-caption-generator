@@ -38,7 +38,7 @@ In order to make the natural English captions understandable for the model, we c
 
 ### 5. Creating data generator
 
-We create a supervised learning task where we have to train our model on 6000 images and each image contains a feature vector of length 2048 with captions represented numerically. Since we do not possess the memory to store so much data for 6000 images each, we use a generator that will yield data in batches. The data generator yields the input and output sequence. So for example, if the input to our model was [x1, x2] and the output was y, then x1 represents the 2048 feature vector of that particular image, x2 represents the input text sequence, and y represents the output text sequence that the model predicts. 
+We create a supervised learning task where we have to train our model on 8000 images and each image contains a feature vector of length 2048 with captions represented numerically. Since we do not possess the memory to store so much data for 8000 images each, we use a generator that will yield data in batches. The data generator yields the input and output sequence. So for example, if the input to our model was [x1, x2] and the output was y, then x1 represents the 2048 feature vector of that particular image, x2 represents the input text sequence, and y represents the output text sequence that the model predicts. 
 
 ### 6. Defining CNN-RNN model
 
@@ -48,7 +48,7 @@ We use the Keras Model from the Functional API to create the structure of the mo
 
 ### 7. Training model
 
-In training the model, we use the 6000 images in the training dataset by generating the input and output sequences in batches and fitting them to the model using the keras model.fit_generator() function. Finally, we save the model to our models folder after every epoch of training. 
+In training the model, we use the 8000 images in the training dataset by generating the input and output sequences in batches and fitting them to the model using the keras model.fit_generator() function. Finally, we save the model to our models folder after every epoch of training. 
 
 ### 8. Testing model
 
