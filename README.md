@@ -105,6 +105,7 @@ Model generated caption: The Man Is Sitting On The Grass With His Arms Open
 To view the live demo of our alt-text generator with the front-end website, please visit: https://www.loom.com/share/8e674bffb5ff4ac2a86cf402277eb868
 
 To play around with our alt-text generator for yourself, please visit the front-end website here: https://wenq97.pythonanywhere.com/ 
+
 Thank you! :3
 
 ## Setup
