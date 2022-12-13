@@ -18,7 +18,7 @@ For the alt-text generator that we are using, we trained our models on the [Flic
 ## Methodology
 Our alt-text generator will involve components of both computer vision and natural language processing to recognize the context of an image and describe them coherently in English. Below is the architecture for our final model:
 
-![Simple model architecture](model_architecture.png)
+![numeric model architecture describing layer type, output shape, parameters, and connected to](model_architecture.png)
 
 ### 1. Data cleaning
 
@@ -43,6 +43,16 @@ We create a supervised learning task where we have to train our model on 6000 im
 ### 6. Defining CNN-RNN model
 
 We use the Keras Model from the Functional API to create the structure of the model. There are three major components to the model structure. (1) The feature extractor, which extracts features of size 2048 from the image, and with a dense layer reduces the dimensions to 256 nodes. (2) The sequence processor which is an embedding layer that handles the text input followed by the LSTM layer. (3) The decoder, which works by merging the output from its above two layers and processes by the dense layer to make the final prediction. The final layer will contain the same number of nodes as the vocabulary size of the dataset. The model structure can be visualized below. 
+
+![simple model structure of initial model creation method](model_structure.png)
+
+### 7. Training model
+
+In training the model, we use the 6000 images in the training dataset by generating the input and output sequences in batches and fitting them to the model using the keras model.fit_generator() function. Finally, we save the model to our models folder after every epoch of training. 
+
+### 8. Testing model
+
+After the model has been trained, we load the model and generate predictions based on a testing dataset (or inputted images of our own). The predictions contain the max length of index values so we use the tokenizer.p file we dumped our extracted features into to get the words from their index values.
 
 
 ## Experiments/evaluation & Results
