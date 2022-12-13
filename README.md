@@ -16,7 +16,34 @@ For the alt-text generator that we are using, we trained our models on the [Flic
 - [Image Captioning With Flickr8k Dataset & BLEU](https://medium.com/@raman.shinde15/image-captioning-with-flickr8k-dataset-bleu-4bcba0b52926)
 
 ## Methodology
-TODO
+Our alt-text generator will involve components of both computer vision and natural language processing to recognize the context of an image and describe them coherently in English. Below is the architecture for our final model:
+
+![Simple model architecture](model_architecture.png)
+
+### 1. Data cleaning
+
+To build our model, first we had to load and pre-process our Flicker_8k dataset. Within the dataset, each image has 5 captions and a number from 0 to 4 is assigned for each caption. We created a function that would create a dictionary of descriptions that maps each image in the dataset to a list of its respective 5 captions. After we have preprocessed all the descriptions, we save them and store them in a file linked to each image for easy reference. 
+
+### 2. Extracting feature vector from images
+
+To extract the features of the images, we used the pre-trained Xception model. This model has already been trained on the large imagenet dataset and is able to extract features from our images based on 1000 different classes that will be used to classify our imputed Flickr_8k dataset. We directly import this model from the keras.applications.xception package. Since the Xception model was originally built for the imagenet dataset, we had to perform little changes to make our dataset compatible with the model, such as adapting to the 299x299x3 image size input that the model takes in, as well removing the last classification layer to retrieve the 2048 feature vector. Using the extract_features() function, we extract the features for all the images and map the image file names with their respective feature array, and finally we dump the features into a features.p file for later reference. 
+
+### 3. Training on dataset
+
+First we load the file with the preprocessed descriptions linked to the images and return the list of images. Then we create a dictionary that contains the captions for each photo from the current file with the list of all the images. We also append some sort of starting and ending identifier for each caption, so that our LSTM model will be able to identify the start and end of each of the captions. Finally, we create the dictionary for image names linked with their respective feature vector which was previously extracted using the Xception model. 
+
+### 4. Tokenizing vocabulary
+
+In order to make the natural English captions understandable for the model, we create a numeric representation of them. We do this by mapping each word of the vocabulary with a unique index value. We use the keras library to import a tokenizer function that creates tokens based on the vocabulary and saves them to a tokenizer.p pickle file. We also calculate the maximum length of the descriptions in order to help us decide the structure of the model’s parameters when used later on. In our case, we found the maximum length of the descriptions to be 32. 
+
+### 5. Creating data generator
+
+We create a supervised learning task where we have to train our model on 6000 images and each image contains a feature vector of length 2048 with captions represented numerically. Since we do not possess the memory to store so much data for 6000 images each, we use a generator that will yield data in batches. The data generator yields the input and output sequence. So for example, if the input to our model was [x1, x2] and the output was y, then x1 represents the 2048 feature vector of that particular image, x2 represents the input text sequence, and y represents the output text sequence that the model predicts. 
+
+### 6. Defining CNN-RNN model
+
+We use the Keras Model from the Functional API to create the structure of the model. There are three major components to the model structure. (1) The feature extractor, which extracts features of size 2048 from the image, and with a dense layer reduces the dimensions to 256 nodes. (2) The sequence processor which is an embedding layer that handles the text input followed by the LSTM layer. (3) The decoder, which works by merging the output from its above two layers and processes by the dense layer to make the final prediction. The final layer will contain the same number of nodes as the vocabulary size of the dataset. The model structure can be visualized below. 
+
 
 ## Experiments/evaluation & Results
 We iteratively improved upon the vanilla model that we have and demonstrated that using a deeper network, pre-trained ImageNet weights and text embeddings did improve the performance of the model significantly. To evaluate the performance of the model, we evaluated the cumulative n-gram BLEU scores on 1000 test images on the dataset, including monogram, bigram, trigram, and 4-gram. We also generated plots for BLEU scores for each of the 10 epochs we trained for each version of the model.
