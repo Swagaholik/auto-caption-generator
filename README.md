@@ -26,7 +26,7 @@ To build our model, first we had to load and pre-process our Flicker_8k dataset.
 
 ### 2. Extracting feature vector from images
 
-To extract the features of the images, we used the pre-trained Xception model. This model has already been trained on the large ImageNet dataset and is able to extract features from our images based on 1000 different classes that will be used to classify our imputed Flickr_8k dataset. We directly import this model from the keras.applications.xception package. Since the Xception model was originally built for the ImageNet dataset, we had to perform little changes to make our dataset compatible with the model, such as adapting to the 299x299x3 image size input that the model takes in, as well removing the last classification layer to retrieve the 2048 feature vector. Using the extract_features() function, we extract the features for all the images and map the image file names with their respective feature array, and finally we dump the features into a features.p file for later reference. 
+To extract the features of the images, we used the pre-trained Xception model. This model has already been trained on the large ImageNet dataset and is able to extract features from our images based on 1000 different classes that will be used to classify our imputed Flickr_8k dataset. We directly import this model from the keras.applications.xception package. Since the Xception model was originally built for the ImageNet dataset, we had to perform little changes to make our dataset compatible with the model, such as adapting to the 299x299x3 image size input that the model takes in, as well removing the last classification layer to retrieve the 2048 feature vector. Using the `extract_features()` function, we extract the features for all the images and map the image file names with their respective feature array, and finally we dump the features into a features.p file for later reference. 
 
 ### 3. Training on dataset
 
@@ -34,11 +34,11 @@ First we load the file with the preprocessed descriptions linked to the images a
 
 ### 4. Tokenizing vocabulary
 
-In order to make the natural English captions understandable for the model, we create a numeric representation of them. We do this by mapping each word of the vocabulary with a unique index value. We use the keras library to import a tokenizer function that creates tokens based on the vocabulary and saves them to a tokenizer.p pickle file. We also calculate the maximum length of the descriptions in order to help us decide the structure of the model’s parameters when used later on. In our case, we found the maximum length of the descriptions to be 32. 
+In order to make the natural English captions understandable for the model, we create a numeric representation of them. We do this by mapping each word of the vocabulary with a unique index value. We use the keras library to import a tokenizer function that creates tokens based on the vocabulary and saves them to a tokenizer.p pickle file. We also calculate the maximum length of the descriptions in order to help us decide the structure of the model’s parameters when used later on. In our case, we found the maximum length of the descriptions to be 31. 
 
 ### 5. Creating data generator
 
-We create a supervised learning task where we have to train our model on 8000 images and each image contains a feature vector of length 2048 with captions represented numerically. Since we do not possess the memory to store so much data for 8000 images each, we use a generator that will yield data in batches. The data generator yields the input and output sequence. So for example, if the input to our model was [x1, x2] and the output was y, then x1 represents the 2048 feature vector of that particular image, x2 represents the input text sequence, and y represents the output text sequence that the model predicts. 
+We create a supervised learning task where we have to train our model on 6000 images and each image contains a feature vector of length 2048 with captions represented numerically. Since we do not possess the memory to store so much data for 6000 images each, we use a generator that will yield data in batches. The data generator yields the input and output sequence. So for example, if the input to our model was `[x1, x2]` and the output was `y`, then `x1` represents the 2048 feature vector of that particular image, `x2` represents the input text sequence, and `y` represents the output text sequence that the model predicts. 
 
 ### 6. Defining CNN-RNN model
 
@@ -48,11 +48,11 @@ We use the Keras Model from the Functional API to create the structure of the mo
 
 ### 7. Training model
 
-In training the model, we use the 8000 images in the training dataset by generating the input and output sequences in batches and fitting them to the model using the keras model.fit_generator() function. Finally, we save the model to our models folder after every epoch of training. 
+In training the model, we use the 6000 images in the training dataset by generating the input and output sequences in batches and fitting them to the model using the keras `model.fit_generator()` function. Finally, we save the model to our models folder after every epoch of training. 
 
 ### 8. Testing model
 
-After the model has been trained, we load the model and generate predictions based on a testing dataset (or inputted images of our own). The predictions contain the max length of index values so we use the tokenizer.p file we dumped our extracted features into to get the words from their index values.
+After the model has been trained, we evaluate it on a test dataset of 1000 images using BLEU score metric. We then load the model and generate predictions based on some images in the dataset (or inputted images of our own). The predictions contain the max length of index values so we use the tokenizer.p file we dumped our extracted features into to get the words from their index values.
 
 
 ## Experiments/evaluation & Results
@@ -114,28 +114,35 @@ This also introduced significant improvement to our model, bringing the monogram
 We have also manually evaluated some caption generation examples from the Flickr dataset.
 
 ![couple stands close at the water edge](results/test_imgs/test1.jpg)
+
 Real caption options:
 - couple stands close at the water edge
 - the two people stand by body of water and in front of bushes in fall
 - two people hold each other near pond
 - two people stand by the water
 - two people stand together on the edge of the water on the grass
+
 Model generated caption: Two People Are Walking Along The Beach
 
 ![brown dog is running through brown field](results/test_imgs/test2.jpg)
+
 Real caption options:
 - brown dog is running through brown field
 - brown dog is running through the field
 - brown dog with collar runs in the dead grass with his tongue hanging out to the side
 - brown dog with his tongue wagging as he runs through field
 - dog running in the grass
+
 Model generated caption: Brown Dog Is Running Through The Grass
 
 Some other examples with images outside the dataset:
+
 ![horse is running on grass](results/test_imgs/horse.jpg)
+
 Model generated caption: Two Dogs Are Running Through The Grass
 
 ![a white fluffy cat yarning on a person's lap](results/test_imgs/cat.jpg)
+
 Model generated caption: The Man Is Sitting On The Grass With His Arms Open
 
 ## Live Demo (Extra Credit)
