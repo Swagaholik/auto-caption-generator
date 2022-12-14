@@ -1,3 +1,5 @@
+Link to final project video: https://youtu.be/PNYCzvZbtsQ
+
 # Alt-text generator for images
 ## Abstract
 Our project uses concepts of a CNN and LSTM model to build a working model of an alt-text (alt-text can be defined as a descriptive caption about each scene in a video or an image) generator by implementing CNN with LSTM. We do so by first extracting the image features from an example dataset to be trained on. We use the pre-trained model, Xception, which is a CNN model trained on the imagenet dataset to perform feature extraction. Convolutional Neural Networks (CNN) are specialized deep neural networks which can process data with 2D matrix shapes, which makes images easily representable with CNN and very useful when working with image classification and image identification purposes. CNN scans images from left to right and top to bottom to pull out important features from the image and combines the features to classify images. This is especially useful in our case, as it means that our alt-text generator can also handle images that have been translated, rotated, scaled and changed in perspective.
